@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  tcp_server:
+    image: time
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    command:
+      - "-tcp"
+      - "-port=8080"
+      - "-workers=1"
+      - "-timeout=5"
+    networks:
+      - time_network
+
+  udp_server:
+    image: time
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    command:
+      - "-udp"
+      - "-port=8081"
+      - "-workers=1"
+      - "-timeout=5"
+    networks:
+      - time_network
+
+  tcp_client:
+    image: time
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - tcp_server
+    command:
+      - "-c"
+      - "-tcp"
+      - "-h=tcp_server"
+      - "-port=8080"
+      - "-workers=1"
+      - "-timeout=5"
+    networks:
+      - time_network
+
+  udp_client:
+    image: time
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - udp_server
+    command:
+      - "-c"
+      - "-udp"
+      - "-h=udp_server"
+      - "-port=8081"
+      - "-workers=1"
+      - "-timeout=5"
+    networks:
+      - time_network
+
+networks:
+  time_network:
+    driver: bridge
