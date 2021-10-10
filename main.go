@@ -56,7 +56,6 @@ func main() {
 	}
 
 	var svc = service.NewTimeProtocolService(clock.New())
-
 	if s, err = server.NewTimeServer(proto, addr, *workers, writeTimeout, svc); err != nil {
 		log.Fatal(err)
 	}
